@@ -1,6 +1,7 @@
+"use client";
 import { useState, useEffect, useRef } from "react";
 
-const SECTIONS = ["intro", "afirmativa", "negativa", "interrogativa", "contracoes", "pratica", "quiz"];
+const SECTIONS = ["intro", "afirmativa", "negativa", "interrogativa", "wh-questions", "contracoes", "artigos", "plurais", "pratica", "pronomes", "quiz"];
 
 const quizQuestions = [
   { q: "I ___ a student.", options: ["am", "is", "are"], correct: 0, tip: "Use 'am' com o pronome I." },
@@ -15,6 +16,23 @@ const quizQuestions = [
   { q: "___ he your brother?", options: ["Are", "Am", "Is"], correct: 2, tip: "He usa 'is', então a pergunta é 'Is he...?'" },
   { q: "The cats ___ on the table.", options: ["is", "am", "are"], correct: 2, tip: "Cats é plural, usa 'are'." },
   { q: "My name ___ Jaime.", options: ["are", "is", "am"], correct: 1, tip: "'My name' equivale a 'it', então usa 'is'." },
+  { q: "___ is my sister.", options: ["This", "These", "Those"], correct: 0, tip: "Para singular perto, usamos 'This'." },
+  { q: "I like ___ new car.", options: ["your", "you", "he"], correct: 0, tip: "Usamos pronomes possessivos (my, your, his...) antes de substantivos." },
+  { q: "___ are her brothers.", options: ["These", "This", "That"], correct: 0, tip: "Para plural perto, usamos 'These'." },
+  { q: "He is ___ grandfather.", options: ["our", "we", "they"], correct: 0, tip: "Possessivos: our (nosso), his (dele), her (dela)." },
+  { q: "Look at ___ bird way over there.", options: ["that", "this", "these"], correct: 0, tip: "Para singular longe, usamos 'That'." },
+  { q: "Are ___ your parents?", options: ["those", "this", "that"], correct: 0, tip: "Para plural longe, usamos 'Those'." },
+  { q: "Can you help ___?", options: ["me", "I", "my"], correct: 0, tip: "Depois de verbos, usamos pronomes objeto (me, you, him, her...)." },
+  { q: "I love my parents. I live with ___.", options: ["them", "they", "their"], correct: 0, tip: "Pronome objeto para 'they' é 'them'." },
+  { q: "___ is your teacher?", options: ["Who", "What", "Where"], correct: 0, tip: "'Who' é usado para pessoas." },
+  { q: "___ are you from?", options: ["Where", "When", "Who"], correct: 0, tip: "'Where' é usado para lugares." },
+  { q: "___ is your birthday?", options: ["When", "What", "Who"], correct: 1, tip: "'When' é usado para tempo/datas." },
+  { q: "She is talking to ___.", options: ["him", "he", "his"], correct: 0, tip: "Depois de preposição (to), usamos o pronome objeto (him)." },
+  { q: "I need ___ apple.", options: ["an", "a", "the"], correct: 0, tip: "Usamos 'an' antes de sons de vogais (a, e, i, o, u)." },
+  { q: "He is ___ doctor.", options: ["a", "an", "the"], correct: 0, tip: "Usamos 'a' antes de profissões com som de consoante." },
+  { q: "Look at ___ moon!", options: ["the", "a", "an"], correct: 0, tip: "Usamos 'the' para coisas únicas." },
+  { q: "One child, two ___.", options: ["children", "childs", "childrens"], correct: 0, tip: "'Child' é um plural irregular: altera para 'children'." },
+  { q: "I have three ___.", options: ["boxes", "box", "boxs"], correct: 0, tip: "Palavras terminadas em -s, -sh, -ch, -x, -z ganham '-es' no plural." },
 ];
 
 const conjugationTable = [
@@ -73,7 +91,7 @@ function ProgressBar({ progress }) {
 }
 
 function NavDots({ activeSection }) {
-  const labels = ["Início", "Afirmativa", "Negativa", "Interrogativa", "Contrações", "Prática", "Quiz"];
+  const labels = ["Início", "Afirmativa", "Negativa", "Interrogativa", "Wh- Questions", "Contrações", "Artigos", "Plurais", "Prática", "Pronomes", "Quiz"];
   return (
     <nav style={{
       position: "fixed", right: "16px", top: "50%", transform: "translateY(-50%)",
@@ -124,6 +142,40 @@ function FlipCard({ front, back }) {
         }}>
           {back}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function InteractiveDemonstratives() {
+  const [selected, setSelected] = useState(0);
+  const items = [
+    { en: "This", pt: "Este/Esta", desc: "Perto, Singular", ex: "This is my house.", icon: "📍" },
+    { en: "That", pt: "Aquele/Aquela", desc: "Longe, Singular", ex: "That is a bird.", icon: "🔭" },
+    { en: "These", pt: "Estes/Estas", desc: "Perto, Plural", ex: "These are my keys.", icon: "📍📍" },
+    { en: "Those", pt: "Aqueles/Aquelas", desc: "Longe, Plural", ex: "Those are stars.", icon: "🔭🔭" },
+  ];
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
+        {items.map((item, i) => (
+          <button key={i} onClick={() => setSelected(i)} style={{
+            padding: "16px", borderRadius: "14px", border: "2px solid",
+            borderColor: selected === i ? "#00838F" : "rgba(0,0,0,0.05)",
+            background: selected === i ? "#E0F7FA" : "#fff",
+            textAlign: "left", cursor: "pointer", transition: "all 0.3s ease",
+          }}>
+            <div style={{ fontSize: "20px", marginBottom: "4px" }}>{item.icon} {item.en}</div>
+            <div style={{ fontSize: "12px", color: "#666" }}>{item.desc}</div>
+          </button>
+        ))}
+      </div>
+      <div style={{
+        padding: "20px", background: "linear-gradient(135deg, #00838F, #00ACC1)",
+        borderRadius: "16px", color: "#fff", animation: "slideUp 0.3s ease",
+      }}>
+        <div style={{ fontSize: "22px", fontFamily: "'Literata', serif", fontWeight: 700, marginBottom: "4px" }}>{items[selected].en} = {items[selected].pt}</div>
+        <div style={{ fontSize: "16px", opacity: 0.9 }}>Exemplo: <strong>{items[selected].ex}</strong></div>
       </div>
     </div>
   );
@@ -427,7 +479,7 @@ export default function VerbToBeStudy() {
           color: "#777", maxWidth: "560px", lineHeight: 1.7, marginBottom: "44px",
           animation: "slideUp 0.6s ease 0.6s both",
         }}>
-          Aprenda a usar <strong style={{color:"#1C2637"}}>am</strong>, <strong style={{color:"#1C2637"}}>is</strong> e <strong style={{color:"#1C2637"}}>are</strong> nas formas
+          Aprenda a usar <strong style={{ color: "#1C2637" }}>am</strong>, <strong style={{ color: "#1C2637" }}>is</strong> e <strong style={{ color: "#1C2637" }}>are</strong> nas formas
           afirmativa, negativa, interrogativa e com contrações.
         </p>
 
@@ -548,7 +600,7 @@ export default function VerbToBeStudy() {
               boxShadow: "0 3px 16px rgba(0,0,0,0.04)", marginBottom: "20px",
             }}>
               <p style={{ fontFamily: "'Literata', serif", fontSize: "18px", lineHeight: 1.85, color: "#444", marginBottom: "24px" }}>
-                Para negar com o verbo "to be", basta adicionar <strong style={{color:"#C75B3F"}}>not</strong> logo depois do verbo.
+                Para negar com o verbo "to be", basta adicionar <strong style={{ color: "#C75B3F" }}>not</strong> logo depois do verbo.
                 Diferente de outros verbos em inglês, o "to be" <strong>não precisa</strong> de auxiliar (do/does) para formar a negativa.
               </p>
 
@@ -594,9 +646,9 @@ export default function VerbToBeStudy() {
               </div>
               <div style={{ fontFamily: "'Literata', serif", fontSize: "17px", lineHeight: 2, opacity: 0.92 }}>
                 <strong>Sujeito + am/is/are + NOT + complemento</strong><br /><br />
-                <span style={{color:"#D4A04A"}}>I</span> + am + not + happy → <em>Eu não estou feliz</em><br />
-                <span style={{color:"#C75B3F"}}>She</span> + is + not + here → <em>Ela não está aqui</em><br />
-                <span style={{color:"#5A9E6F"}}>They</span> + are + not + ready → <em>Eles não estão prontos</em>
+                <span style={{ color: "#D4A04A" }}>I</span> + am + not + happy → <em>Eu não estou feliz</em><br />
+                <span style={{ color: "#C75B3F" }}>She</span> + is + not + here → <em>Ela não está aqui</em><br />
+                <span style={{ color: "#5A9E6F" }}>They</span> + are + not + ready → <em>Eles não estão prontos</em>
               </div>
             </div>
           </FadeIn>
@@ -622,7 +674,7 @@ export default function VerbToBeStudy() {
               boxShadow: "0 3px 16px rgba(0,0,0,0.04)", marginBottom: "20px",
             }}>
               <p style={{ fontFamily: "'Literata', serif", fontSize: "18px", lineHeight: 1.85, color: "#444", marginBottom: "24px" }}>
-                Para fazer perguntas com "to be", basta <strong>inverter</strong> a posição do verbo e do sujeito — 
+                Para fazer perguntas com "to be", basta <strong>inverter</strong> a posição do verbo e do sujeito —
                 o verbo vai <strong>antes</strong> do sujeito. Não é necessário usar auxiliar (do/does).
               </p>
 
@@ -673,6 +725,51 @@ export default function VerbToBeStudy() {
                   "Is she Brazilian?" → "<strong>Yes, she is.</strong>" ou "<strong>No, she isn't.</strong>"<br /><br />
                   ⚠️ Nunca diga "Yes, I'm" (com contração) na resposta afirmativa curta. O correto é "<strong>Yes, I am.</strong>"
                 </div>
+              </div>
+            </div>
+          </FadeIn>
+        </section>
+
+        {/* === WH- QUESTIONS === */}
+        <section id="wh-questions" style={{ paddingBottom: "60px" }}>
+          <FadeIn>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "28px" }}>
+              <div style={{
+                width: "42px", height: "42px", borderRadius: "12px",
+                background: "linear-gradient(135deg, #1976D2, #42A5F5)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: "#fff", fontSize: "18px", fontWeight: 700,
+              }}>💡</div>
+              <h2 style={{ fontFamily: "'Literata', serif", fontSize: "34px", fontWeight: 700 }}>Wh- Questions</h2>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.1}>
+            <div style={{
+              padding: "30px", background: "#fff", borderRadius: "20px",
+              boxShadow: "0 3px 16px rgba(0,0,0,0.04)", marginBottom: "20px",
+            }}>
+              <p style={{ fontFamily: "'Literata', serif", fontSize: "18px", lineHeight: 1.85, color: "#444", marginBottom: "24px" }}>
+                Além de perguntas de "Sim ou Não", usamos palavras especiais para obter informações específicas.
+                A estrutura é: <strong>Wh- word + am/is/are + sujeito?</strong>
+              </p>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px" }}>
+                {[
+                  { wh: "Who", mean: "Quem", ex: "Who is that girl?", exPt: "Quem é aquela garota?" },
+                  { wh: "What", mean: "O que / Qual", ex: "What is your name?", exPt: "Qual é o seu nome?" },
+                  { wh: "Where", mean: "Onde", ex: "Where are you from?", exPt: "De onde você é?" },
+                  { wh: "When", mean: "Quando", ex: "When is the party?", exPt: "Quando é a festa?" },
+                  { wh: "Why", mean: "Por que", ex: "Why are you sad?", exPt: "Por que você está triste?" },
+                  { wh: "How", mean: "Como", ex: "How are you?", exPt: "Como você está?" },
+                ].map((item, i) => (
+                  <div key={i} style={{ padding: "16px", background: "#E3F2FD", borderRadius: "14px", border: "1px solid #BBDEFB" }}>
+                    <div style={{ fontSize: "20px", fontWeight: 700, color: "#1565C0" }}>{item.wh}</div>
+                    <div style={{ fontSize: "12px", color: "#666", marginBottom: "8px" }}>{item.mean}</div>
+                    <div style={{ fontSize: "14px", fontStyle: "italic", color: "#333" }}>"{item.ex}"</div>
+                    <div style={{ fontSize: "12px", color: "#999" }}>{item.exPt}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </FadeIn>
@@ -774,6 +871,133 @@ export default function VerbToBeStudy() {
           </FadeIn>
         </section>
 
+        {/* === ARTIGOS === */}
+        <section id="artigos" style={{ paddingBottom: "60px" }}>
+          <FadeIn>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "28px" }}>
+              <div style={{
+                width: "42px", height: "42px", borderRadius: "12px",
+                background: "linear-gradient(135deg, #FF7043, #FF8A65)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: "#fff", fontSize: "18px", fontWeight: 700,
+              }}>A</div>
+              <h2 style={{ fontFamily: "'Literata', serif", fontSize: "34px", fontWeight: 700 }}>Artigos: A, An, The</h2>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.1}>
+            <div style={{
+              padding: "30px", background: "#fff", borderRadius: "20px",
+              boxShadow: "0 3px 16px rgba(0,0,0,0.04)", marginBottom: "20px",
+            }}>
+              <p style={{ fontFamily: "'Literata', serif", fontSize: "18px", lineHeight: 1.85, color: "#444", marginBottom: "24px" }}>
+                Os artigos acompanham os substantivos indicando se estamos falando de algo genérico ou específico. Eles são divididos em <strong>Indefinidos (Um/Uma)</strong> e <strong>Definidos (O/A/Os/As)</strong>.
+              </p>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+                <div>
+                  <h3 style={{ fontFamily: "'Literata', serif", fontSize: "20px", color: "#E64A19", marginBottom: "12px" }}>A vs An (Artigos Indefinidos)</h3>
+                  <p style={{ fontSize: "15px", color: "#555", marginBottom: "12px" }}>Significam "um" ou "uma". A regra depende do <strong>SOM</strong> da letra seguinte, não apenas da escrita.</p>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px" }}>
+                    <div style={{ padding: "16px", background: "#FBE9E7", borderRadius: "12px", border: "1px solid #FFCCBC" }}>
+                      <div style={{ fontWeight: 700, fontSize: "20px", color: "#BF360C", marginBottom: "8px" }}>A</div>
+                      <div style={{ fontSize: "14px", color: "#D84315", marginBottom: "8px" }}>Antes de som de CONSOSANTE</div>
+                      <div style={{ fontFamily: "'Literata', serif", fontSize: "16px", lineHeight: 1.6 }}>
+                        • <strong>A</strong> car (um carro)<br />
+                        • <strong>A</strong> dog (um cachorro)<br />
+                        • <strong>A</strong> university (<span style={{ opacity: 0.7 }}>som de "yoo"</span>)
+                      </div>
+                    </div>
+                    <div style={{ padding: "16px", background: "#E8F5E9", borderRadius: "12px", border: "1px solid #C8E6C9" }}>
+                      <div style={{ fontWeight: 700, fontSize: "20px", color: "#2E7D32", marginBottom: "8px" }}>An</div>
+                      <div style={{ fontSize: "14px", color: "#388E3C", marginBottom: "8px" }}>Antes de som de VOGAL</div>
+                      <div style={{ fontFamily: "'Literata', serif", fontSize: "16px", lineHeight: 1.6 }}>
+                        • <strong>An</strong> apple (uma maçã)<br />
+                        • <strong>An</strong> elephant (um elefante)<br />
+                        • <strong>An</strong> hour (<span style={{ opacity: 0.7 }}>o 'h' é mudo</span>)
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 style={{ fontFamily: "'Literata', serif", fontSize: "20px", color: "#1976D2", marginBottom: "12px" }}>The (Artigo Definido)</h3>
+                  <p style={{ fontSize: "15px", color: "#555", marginBottom: "12px" }}>Significa "o, a, os, as". Usado para coisas <strong>específicas</strong> e coisas <strong>únicas no mundo</strong>.</p>
+                  <div style={{ padding: "16px", background: "#E3F2FD", borderRadius: "12px", border: "1px solid #BBDEFB" }}>
+                    <div style={{ fontFamily: "'Literata', serif", fontSize: "16px", lineHeight: 1.8 }}>
+                      • Específico: Give me <strong>the</strong> book. <span style={{ opacity: 0.6 }}>(o livro que nós conhecemos)</span><br />
+                      • Único: <strong>The</strong> sun is hot. <span style={{ opacity: 0.6 }}>(só existe um sol)</span><br />
+                      • Plural: <strong>The</strong> cars are new. <span style={{ opacity: 0.6 }}>(os carros específicos)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+        </section>
+
+        {/* === PLURAIS === */}
+        <section id="plurais" style={{ paddingBottom: "60px" }}>
+          <FadeIn>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "28px" }}>
+              <div style={{
+                width: "42px", height: "42px", borderRadius: "12px",
+                background: "linear-gradient(135deg, #00BCD4, #26C6DA)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: "#fff", fontSize: "18px", fontWeight: 700,
+              }}>S</div>
+              <h2 style={{ fontFamily: "'Literata', serif", fontSize: "34px", fontWeight: 700 }}>Plurals (Os Plurais)</h2>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.1}>
+            <div style={{
+              padding: "30px", background: "#fff", borderRadius: "20px",
+              boxShadow: "0 3px 16px rgba(0,0,0,0.04)", marginBottom: "20px",
+            }}>
+              <p style={{ fontFamily: "'Literata', serif", fontSize: "18px", lineHeight: 1.85, color: "#444", marginBottom: "24px" }}>
+                A maioria das palavras em inglês ganha um <strong>-s</strong> no plural (ex: car → cars). Mas existem algumas regras importantes para terminações diferentes e plurais irregulares.
+              </p>
+
+              <div style={{ display: "grid", gap: "16px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "12px", padding: "16px", background: "#F5F5F5", borderRadius: "12px", alignItems: "center" }}>
+                  <div style={{ fontWeight: 600, color: "#333", fontSize: "16px" }}>Regra Geral ( +s )</div>
+                  <div style={{ fontFamily: "'Literata', serif", fontSize: "16px" }}>book → book<strong>s</strong> | dog → dog<strong>s</strong></div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "12px", padding: "16px", background: "#E0F7FA", borderRadius: "12px", alignItems: "center", border: "1px solid #B2EBF2" }}>
+                  <div style={{ fontWeight: 600, color: "#006064", fontSize: "16px" }}>Terminados em -s, -sh, -ch, -x, -z ( +es )</div>
+                  <div style={{ fontFamily: "'Literata', serif", fontSize: "16px", color: "#004D40" }}>bus → bus<strong>es</strong> | box → box<strong>es</strong> | watch → watch<strong>es</strong></div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "12px", padding: "16px", background: "#FFF8E1", borderRadius: "12px", alignItems: "center", border: "1px solid #FFECB3" }}>
+                  <div style={{ fontWeight: 600, color: "#F57F17", fontSize: "16px" }}>Consonante + Y ( Troca -y por -ies )</div>
+                  <div style={{ fontFamily: "'Literata', serif", fontSize: "16px", color: "#E65100" }}>city → cit<strong>ies</strong> | baby → bab<strong>ies</strong> <br /> <span style={{ fontSize: "13px", opacity: 0.7 }}>(Vogal+y apenas adiciona S: boy → boys)</span></div>
+                </div>
+
+                <div>
+                  <h3 style={{ fontFamily: "'Literata', serif", fontSize: "18px", color: "#D32F2F", marginTop: "12px", marginBottom: "12px" }}>⚠️ Plurais Irregulares Comuns</h3>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "10px" }}>
+                    {[
+                      { s: "Man (homem)", p: "Men" },
+                      { s: "Woman (mulher)", p: "Women" },
+                      { s: "Child (criança)", p: "Children" },
+                      { s: "Person (pessoa)", p: "People" },
+                      { s: "Tooth (dente)", p: "Teeth" },
+                      { s: "Foot (pé)", p: "Feet" },
+                    ].map((irr, idx) => (
+                      <div key={idx} style={{ padding: "12px", background: "#FFEBEE", borderRadius: "10px", textAlign: "center", border: "1px solid #FFCDD2" }}>
+                        <div style={{ fontSize: "13px", color: "#C62828", marginBottom: "4px" }}>{irr.s}</div>
+                        <div style={{ fontFamily: "'Literata', serif", fontSize: "18px", fontWeight: 600, color: "#B71C1C" }}>{irr.p}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+        </section>
+
         {/* === PRÁTICA: NOMES E PROFISSÕES === */}
         <section id="pratica" style={{ paddingBottom: "60px" }}>
           <FadeIn>
@@ -814,11 +1038,11 @@ export default function VerbToBeStudy() {
                 📝 Padrões Comuns do Dia a Dia
               </div>
               <div style={{ fontFamily: "'Literata', serif", fontSize: "17px", lineHeight: 2.1 }}>
-                <span style={{color:"#D4A04A", fontWeight: 600}}>My name is</span> + nome → "My name is Jaime." <span style={{opacity:0.5}}>→ Meu nome é Jaime.</span><br />
-                <span style={{color:"#D4A04A", fontWeight: 600}}>I am</span> + profissão → "I am a software architect." <span style={{opacity:0.5}}>→ Eu sou arquiteto de software.</span><br />
-                <span style={{color:"#D4A04A", fontWeight: 600}}>I am from</span> + lugar → "I am from Brazil." <span style={{opacity:0.5}}>→ Eu sou do Brasil.</span><br />
-                <span style={{color:"#D4A04A", fontWeight: 600}}>I am</span> + idade → "I am 30 years old." <span style={{opacity:0.5}}>→ Eu tenho 30 anos.</span><br />
-                <span style={{color:"#D4A04A", fontWeight: 600}}>I am</span> + adjetivo → "I am married." <span style={{opacity:0.5}}>→ Eu sou casado.</span>
+                <span style={{ color: "#D4A04A", fontWeight: 600 }}>My name is</span> + nome → "My name is Jaime." <span style={{ opacity: 0.5 }}>→ Meu nome é Jaime.</span><br />
+                <span style={{ color: "#D4A04A", fontWeight: 600 }}>I am</span> + profissão → "I am a software architect." <span style={{ opacity: 0.5 }}>→ Eu sou arquiteto de software.</span><br />
+                <span style={{ color: "#D4A04A", fontWeight: 600 }}>I am from</span> + lugar → "I am from Brazil." <span style={{ opacity: 0.5 }}>→ Eu sou do Brasil.</span><br />
+                <span style={{ color: "#D4A04A", fontWeight: 600 }}>I am</span> + idade → "I am 30 years old." <span style={{ opacity: 0.5 }}>→ Eu tenho 30 anos.</span><br />
+                <span style={{ color: "#D4A04A", fontWeight: 600 }}>I am</span> + adjetivo → "I am married." <span style={{ opacity: 0.5 }}>→ Eu sou casado.</span>
               </div>
             </div>
           </FadeIn>
@@ -831,7 +1055,7 @@ export default function VerbToBeStudy() {
               <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
                 <span style={{ fontSize: "20px" }}>🇧🇷</span>
                 <div style={{ fontFamily: "'Literata', serif", fontSize: "16px", lineHeight: 1.75, color: "#555" }}>
-                  <strong>Pegadinha para brasileiros:</strong> Em inglês, idade usa "to be" (I <strong>am</strong> 30), 
+                  <strong>Pegadinha para brasileiros:</strong> Em inglês, idade usa "to be" (I <strong>am</strong> 30),
                   mas em português usamos "ter" (Eu <strong>tenho</strong> 30 anos). Não diga "I have 30 years"!
                 </div>
               </div>
@@ -855,6 +1079,179 @@ export default function VerbToBeStudy() {
           </FadeIn>
         </section>
 
+        {/* === PRONOMES === */}
+        <section id="pronomes" style={{ paddingBottom: "60px" }}>
+          <FadeIn>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "28px" }}>
+              <div style={{
+                width: "42px", height: "42px", borderRadius: "12px",
+                background: "linear-gradient(135deg, #8E24AA, #AB47BC)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: "#fff", fontSize: "18px",
+              }}>👥</div>
+              <h2 style={{ fontFamily: "'Literata', serif", fontSize: "34px", fontWeight: 700 }}>Pronomes & Família</h2>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.1}>
+            <div style={{
+              padding: "30px", background: "#fff", borderRadius: "20px",
+              boxShadow: "0 3px 16px rgba(0,0,0,0.04)", marginBottom: "20px",
+            }}>
+              <p style={{ fontFamily: "'Literata', serif", fontSize: "18px", lineHeight: 1.85, color: "#444", marginBottom: "24px" }}>
+                Os pronomes substituem os nomes e indicam posse ou posição. Vamos estudar três tipos importantes:
+                <strong> Pessoais</strong> (quem faz a ação), <strong>Possessivos</strong> (de quem é) e
+                <strong> Demonstrativos</strong> (onde está).
+              </p>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+                <div>
+                  <h3 style={{ fontFamily: "'Literata', serif", fontSize: "20px", color: "#8E24AA", marginBottom: "12px" }}>1. Pronomes Pessoais, Possessivos & Objeto</h3>
+                  <p style={{ fontSize: "16px", color: "#444", marginBottom: "20px", lineHeight: 1.6 }}>
+                    Entender a diferença entre esses três tipos é fundamental para montar frases corretas em inglês. Veja como cada um funciona:
+                  </p>
+
+                  {/* Detalhamento por Tipo */}
+                  <div style={{ display: "grid", gap: "16px", marginBottom: "24px" }}>
+                    <div style={{ padding: "20px", background: "#F3E5F5", borderRadius: "14px", borderLeft: "4px solid #8E24AA" }}>
+                      <div style={{ fontSize: "18px", fontWeight: 700, color: "#4A148C", marginBottom: "8px" }}>Sujeito (Subject Pronouns)</div>
+                      <div style={{ fontSize: "15px", color: "#555", marginBottom: "8px" }}>👉 <em>Quem pratica a ação.</em> Vêm <strong>antes</strong> do verbo.</div>
+                      <div style={{ fontFamily: "'Literata', serif", fontSize: "16px", color: "#4A148C" }}>
+                        <strong style={{ background: "rgba(142, 36, 170, 0.2)", padding: "2px 6px", borderRadius: "4px" }}>I</strong> work here. (<strong>Eu</strong> trabalho aqui.)<br />
+                        <strong style={{ background: "rgba(142, 36, 170, 0.2)", padding: "2px 6px", borderRadius: "4px" }}>She</strong> is my friend. (<strong>Ela</strong> é minha amiga.)
+                      </div>
+                    </div>
+
+                    <div style={{ padding: "20px", background: "#E8EAF6", borderRadius: "14px", borderLeft: "4px solid #3F51B5" }}>
+                      <div style={{ fontSize: "18px", fontWeight: 700, color: "#1A237E", marginBottom: "8px" }}>Possessivo (Possessive Adjectives)</div>
+                      <div style={{ fontSize: "15px", color: "#555", marginBottom: "8px" }}>👉 <em>De quem é algo.</em> Vêm <strong>sempre antes de um substantivo</strong> (coisa/pessoa).</div>
+                      <div style={{ fontFamily: "'Literata', serif", fontSize: "16px", color: "#1A237E" }}>
+                        This is <strong style={{ background: "rgba(63, 81, 181, 0.2)", padding: "2px 6px", borderRadius: "4px" }}>my</strong> car. (Este é o <strong>meu</strong> carro.)<br />
+                        Where is <strong style={{ background: "rgba(63, 81, 181, 0.2)", padding: "2px 6px", borderRadius: "4px" }}>his</strong> book? (Onde está o livro <strong>dele</strong>?)
+                      </div>
+                    </div>
+
+                    <div style={{ padding: "20px", background: "#E0F2F1", borderRadius: "14px", borderLeft: "4px solid #009688" }}>
+                      <div style={{ fontSize: "18px", fontWeight: 700, color: "#004D40", marginBottom: "8px" }}>Objeto (Object Pronouns)</div>
+                      <div style={{ fontSize: "15px", color: "#555", marginBottom: "8px" }}>👉 <em>Quem recebe a ação.</em> Vêm <strong>depois</strong> do verbo ou de preposições (to, with, for). <br />⚠️ <em>Brasileiros erram muito aqui! Dizer "Call she" está errado. O certo é "Call her".</em></div>
+                      <div style={{ fontFamily: "'Literata', serif", fontSize: "16px", color: "#004D40" }}>
+                        I love <strong style={{ background: "rgba(0, 150, 136, 0.2)", padding: "2px 6px", borderRadius: "4px" }}>her</strong>. (Eu <strong>a</strong> amo / Eu amo <strong>ela</strong>.)<br />
+                        Talk to <strong style={{ background: "rgba(0, 150, 136, 0.2)", padding: "2px 6px", borderRadius: "4px" }}>them</strong>. (Fale com <strong>eles</strong>.)
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tabela Comparativa */}
+                  <div style={{ overflowX: "auto", background: "#fff", borderRadius: "12px", border: "1px solid #eee", padding: "16px" }}>
+                    <div style={{ fontSize: "13px", fontWeight: 600, color: "#999", textTransform: "uppercase", marginBottom: "12px", letterSpacing: "1px" }}>Tabela de Referência</div>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: "'Literata', serif", fontSize: "15px", textAlign: "left" }}>
+                      <thead>
+                        <tr style={{ color: "#444", borderBottom: "2px solid #ddd" }}>
+                          <th style={{ padding: "12px 10px" }}>Pessoa (PT)</th>
+                          <th style={{ padding: "12px 10px", color: "#8E24AA" }}>Sujeito (Antes do Verbo)</th>
+                          <th style={{ padding: "12px 10px", color: "#3F51B5" }}>Possessivo (Antes de Coisas)</th>
+                          <th style={{ padding: "12px 10px", color: "#009688" }}>Objeto (Depois do Verbo/Prep)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[
+                          { pt: "Eu", s: "I", p: "My (meu/minha)", o: "Me (me/mim)" },
+                          { pt: "Você / Vocês", s: "You", p: "Your (seu/sua)", o: "You (te/ti)" },
+                          { pt: "Ele", s: "He", p: "His (dele)", o: "Him (o/ele)" },
+                          { pt: "Ela", s: "She", p: "Her (dela)", o: "Her (a/ela)" },
+                          { pt: "Ele/Ela (coisas)", s: "It", p: "Its (dele/dela)", o: "It (o/a)" },
+                          { pt: "Nós", s: "We", p: "Our (nosso/nossa)", o: "Us (nos)" },
+                          { pt: "Eles / Elas", s: "They", p: "Their (deles/delas)", o: "Them (os/as/eles/elas)" },
+                        ].map((row, idx) => (
+                          <tr key={idx} style={{ borderBottom: "1px solid #f5f5f5" }}>
+                            <td style={{ padding: "12px 10px", color: "#777", fontSize: "13px" }}>{row.pt}</td>
+                            <td style={{ padding: "12px 10px", fontWeight: 600 }}>{row.s}</td>
+                            <td style={{ padding: "12px 10px" }}>{row.p}</td>
+                            <td style={{ padding: "12px 10px", fontWeight: 600 }}>{row.o}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 style={{ fontFamily: "'Literata', serif", fontSize: "20px", color: "#00838F", marginBottom: "12px" }}>2. Pronomes Demonstrativos</h3>
+                  <InteractiveDemonstratives />
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.2}>
+            <div style={{
+              padding: "28px", background: "linear-gradient(145deg, #1C2637, #2A3749)",
+              borderRadius: "20px", color: "#EDE4D3", marginBottom: "20px"
+            }}>
+              <div style={{ fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase", opacity: 0.4, marginBottom: "16px" }}>
+                👨‍👩‍👧‍👦 Membros da Família
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px" }}>
+                {[
+                  { en: "Mother", pt: "Mãe", icon: "👩" },
+                  { en: "Father", pt: "Pai", icon: "👨" },
+                  { en: "Son", pt: "Filho", icon: "👦" },
+                  { en: "Daughter", pt: "Filha", icon: "👧" },
+                  { en: "Brother", pt: "Irmão", icon: "👱‍♂️" },
+                  { en: "Sister", pt: "Irmã", icon: "👱‍♀️" },
+                  { en: "Grandfather", pt: "Avô", icon: "👴" },
+                  { en: "Grandmother", pt: "Avó", icon: "👵" },
+                  { en: "Parents", pt: "Pais", icon: "👨‍👩‍👦" },
+                ].map((member, i) => (
+                  <div key={i} style={{ padding: "12px", background: "rgba(255,255,255,0.05)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)" }}>
+                    <div style={{ fontSize: "24px", marginBottom: "4px" }}>{member.icon}</div>
+                    <div style={{ fontWeight: 600, color: "#D4A04A" }}>{member.en}</div>
+                    <div style={{ fontSize: "12px", opacity: 0.5 }}>{member.pt}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.25}>
+            <div style={{
+              padding: "28px", background: "#fff", border: "1px solid rgba(0,0,0,0.05)",
+              borderRadius: "20px", marginBottom: "20px"
+            }}>
+              <div style={{ fontSize: "12px", color: "#999", textTransform: "uppercase", marginBottom: "16px" }}>
+                � Exemplos Descrevendo a Família
+              </div>
+              <div style={{ display: "grid", gap: "12px" }}>
+                {[
+                  { en: "This is my mother. Her name is Sarah.", pt: "Esta é a minha mãe. O nome dela é Sarah." },
+                  { en: "That is your father. He is a doctor.", pt: "Aquele é o seu pai. Ele é um médico." },
+                  { en: "These are his brothers. They are students.", pt: "Estes são os irmãos dele. Eles são estudantes." },
+                  { en: "Those are her sisters. They are young.", pt: "Aquelas são as irmãs dela. Elas são jovens." },
+                  { en: "John is our grandfather.", pt: "John é nosso avô." },
+                  { en: "My parents are from Brazil.", pt: "Meus pais são do Brasil." },
+                ].map((ex, i) => (
+                  <div key={i} style={{ fontFamily: "'Literata', serif", fontSize: "17px", lineHeight: 1.6 }}>
+                    <span style={{ color: "#1C2637", fontWeight: 600 }}>{ex.en}</span> <br />
+                    <span style={{ color: "#777", fontSize: "15px" }}>→ {ex.pt}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.3}>
+            <div style={{ marginBottom: "24px" }}>
+              <h3 style={{ fontFamily: "'Literata', serif", fontSize: "22px", marginBottom: "14px" }}>
+                ✏️ Exercício — Complete as frases
+              </h3>
+              <FillBlank sentence="___ is my sister. (Esta)" answer="This" hint="This/That" />
+              <FillBlank sentence="Where is ___ book? (seu)" answer="your" hint="your/my" />
+              <FillBlank sentence="___ are his cars. (Aqueles)" answer="Those" hint="These/Those" />
+              <FillBlank sentence="She loves ___ dog. (dela)" answer="her" hint="her/his" />
+            </div>
+          </FadeIn>
+        </section>
+
         {/* === QUIZ === */}
         <section id="quiz" style={{ paddingTop: "40px", paddingBottom: "120px" }}>
           <FadeIn>
@@ -871,7 +1268,7 @@ export default function VerbToBeStudy() {
                 Hora do Quiz! 🎯
               </h2>
               <p style={{ fontFamily: "'Literata', serif", fontSize: "17px", color: "#999" }}>
-                12 questões para testar tudo o que você aprendeu
+                {quizQuestions.length} questões para testar tudo o que você aprendeu
               </p>
             </div>
           </FadeIn>
